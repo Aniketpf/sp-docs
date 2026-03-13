@@ -89,6 +89,10 @@ const config: Config = {
       indexName: 'my-docs-local',
       contextualSearch: false,
       searchPagePath: 'search',
+      insights: true,
+      searchParameters: {
+        facetFilters: ['lang:en'],
+      },
     },
     navbar: {
       title: 'SelectPrism',
@@ -165,3 +169,11 @@ const config: Config = {
 };
 
 export default config;
+
+/**
+ * docker run --rm --platform linux/amd64 \                                 
+  -e APPLICATION_ID=4NFQAL2J5A \
+  -e API_KEY=0318d67eb026e6b44be1d7633fded5db \
+  -e "CONFIG=$(cat docsearch-config.json | jq -r tostring)" \
+  algolia/docsearch-scraper
+ */
