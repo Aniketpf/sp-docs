@@ -1,62 +1,22 @@
 {
-    "index_name": "my-docs-local",
-    "start_urls": [
-        "http://host.docker.internal:3000/docs/api/add-candidates",
-        "http://host.docker.internal:3000/docs/api/add-candidates-to-a-job-assessment",
-        "http://host.docker.internal:3000/docs/api/attach-resume-to-candidate",
-        "http://host.docker.internal:3000/docs/api/configure-job-assessment-questions",
-        "http://host.docker.internal:3000/docs/api/configure-job-assessment-questions-without-id-in-path",
-        "http://host.docker.internal:3000/docs/api/create-a-new-interview",
-        "http://host.docker.internal:3000/docs/api/create-a-new-job-assessment",
-        "http://host.docker.internal:3000/docs/api/create-candidate-assessment",
-        "http://host.docker.internal:3000/docs/api/generate-o-auth-access-token",
-        "http://host.docker.internal:3000/docs/api/generate-o-auth-client-credentials",
-        "http://host.docker.internal:3000/docs/api/get-all-job-assessments",
-        "http://host.docker.internal:3000/docs/api/get-interview-proctoring-data",
-        "http://host.docker.internal:3000/docs/api/get-interview-recording-details",
-        "http://host.docker.internal:3000/docs/api/get-interview-results",
-        "http://host.docker.internal:3000/docs/api/get-interview-statistics-for-a-job-assessment",
-        "http://host.docker.internal:3000/docs/api/get-search-and-match-data",
-        "http://host.docker.internal:3000/docs/api/regenerate-an-existing-interview",
-        "http://host.docker.internal:3000/docs/api/search-and-match-webhook",
-        "http://host.docker.internal:3000/docs/api/selectprism-external-apis",
-        "http://host.docker.internal:3000/docs/intro",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-assessment-creation-failed",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-assessment-creation-success",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-assessment-interview-ready",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-below-snm-threshold",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-creation-failed",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-creation-success",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-resume-parsing-failed",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-resume-parsing-success",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-update-failed",
-        "http://host.docker.internal:3000/docs/webhooks/candidate-update-success",
-        "http://host.docker.internal:3000/docs/webhooks/interview-created",
-        "http://host.docker.internal:3000/docs/webhooks/interview-creation-failed",
-        "http://host.docker.internal:3000/docs/webhooks/interview-creation-success",
-        "http://host.docker.internal:3000/docs/webhooks/interview-report-generated",
-        "http://host.docker.internal:3000/docs/webhooks/interview-reset-failed",
-        "http://host.docker.internal:3000/docs/webhooks/interview-reset-success",
-        "http://host.docker.internal:3000/docs/webhooks/job-description-parse-failed",
-        "http://host.docker.internal:3000/docs/webhooks/job-description-parse-success",
-        "http://host.docker.internal:3000/docs/webhooks/overview",
-        "http://host.docker.internal:3000/docs/webhooks/proctoring-data-generated",
-        "http://host.docker.internal:3000/docs/webhooks/recording-data-generated",
-        "http://host.docker.internal:3000/docs/webhooks/search-and-match-data-generated"
-    ],
-    "allowed_domains": ["host.docker.internal"],
-    "stop_urls": [],
-    "selectors": {
-        "lvl0": {
-            "selector": "h1",
-            "default_value": "Documentation"
-        },
-        "lvl1": "h1",
-        "lvl2": "h2",
-        "lvl3": "h3",
-        "text": "p"
+  "index_name": "my-docs-local",
+  "start_urls": [
+    "https://sp-docs-ms37qfvkx-aniketsaha-5736s-projects.vercel.app/"
+  ],
+  "sitemap_urls": [
+    "https://sp-docs-ms37qfvkx-aniketsaha-5736s-projects.vercel.app/sitemap.xml"
+  ],
+  "allowed_domains": ["sp-docs-ms37qfvkx-aniketsaha-5736s-projects.vercel.app"],
+  "selectors": {
+    "lvl0": {
+      "selector": "h1",
+      "default_value": "Documentation"
     },
-    "strip_chars": " .,;:#",
-    "nb_hits_max": 10000,
-    "js_render": true
+    "lvl1": "h1",
+    "lvl2": "h2",
+    "lvl3": "h3",
+    "text": "p"
+  },
+  "strip_chars": " .,;:#",
+  "nb_hits_max": 10000
 }
