@@ -9,13 +9,15 @@
   "allowed_domains": ["sp-docs-ms37qfvkx-aniketsaha-5736s-projects.vercel.app"],
   "selectors": {
     "lvl0": {
-      "selector": "h1",
-      "default_value": "Documentation"
+      "selector": ".navbar__item.navbar__link--active, .menu__link--active",
+      "default_value": "Documentation",
+      "global": true
     },
-    "lvl1": "h1",
-    "lvl2": "h2",
-    "lvl3": "h3",
-    "text": "p"
+    "lvl1": "article h1",
+    "lvl2": "article h2",
+    "lvl3": "article h3",
+    "lvl4": "article h4",
+    "text": "article p, article li"
   },
   "strip_chars": " .,;:#",
   "nb_hits_max": 10000
