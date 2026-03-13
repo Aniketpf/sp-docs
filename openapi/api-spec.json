@@ -1,0 +1,3914 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "SelectPrism External APIs",
+        "version": "1.0.0",
+        "description": "REST API endpoints for external integrations"
+    },
+    "servers": [
+        {
+            "url": "https://pf.prism-recruit.xyz/user-app/api/external",
+            "description": "Local development server"
+        },
+        {
+            "url": "https://{host}/v3/inbounds/clients/{clientId}/types",
+            "description": "Production API",
+            "variables": {
+                "host": {
+                    "default": "api.prismtechnology.xyz",
+                    "enum": ["api.prismtechnology.xyz", "api.pfsit.xyz", "api.pfuat.xyz", "api.prismforce.com"],
+                    "description": "Target environment host"
+                },
+                "clientId": {
+                    "default": "",
+                    "description": "Integration Layer Client ID"
+                }
+            }
+        }
+    ],
+    "security": [
+        {
+            "apiKeyAuth": []
+        }
+    ],
+    "paths": {
+        "/candidates": {
+            "post": {
+                "tags": ["Candidates"],
+                "summary": "Add candidates",
+                "description": "Add one or more candidates to the system",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddCandidatesRequest"
+                            },
+                            "example": {
+                                "invite": true,
+                                "expiresInDays": 7,
+                                "candidates": [
+                                    {
+                                        "email": "john.doe@example.com",
+                                        "firstName": "John",
+                                        "lastName": "Doe",
+                                        "yearsOfExperience": "5",
+                                        "currentRole": "Software Engineer",
+                                        "currentCity": "Bangalore"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Candidates added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/resume": {
+            "post": {
+                "tags": ["Candidates"],
+                "summary": "Attach resume to candidate",
+                "description": "Upload and attach a resume file to an existing candidate",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CandidateResumeRequest"
+                            },
+                            "example": {
+                                "candidateId": "cand_123456",
+                                "fileType": "pdf",
+                                "fileName": "john_doe_resume.pdf",
+                                "base64EncodedFileContents": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago..."
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resume attached successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Candidate not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/candidates/assessments": {
+            "post": {
+                "tags": ["Candidates"],
+                "summary": "Create candidate assessment",
+                "description": "Create an assessment for a candidate on a specific job",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CandidateAssessmentRequest"
+                            },
+                            "example": {
+                                "assessmentId": "assessment_123",
+                                "candidateId": "candidate_456",
+                                "candidateAssessmentId": "ca_789"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Candidate assessment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Assessment or candidate not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/interviews": {
+            "post": {
+                "tags": ["Interviews"],
+                "summary": "Create a new interview",
+                "description": "Create a new interview for a candidate assessment",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateInterviewItem"
+                            },
+                            "example": {
+                                "eventId": "evt_test_123",
+                                "externalCandidateAssessmentId": "87487364234",
+                                "expiryInSeconds": 86400
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Interview created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AcceptedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or missing bearer token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - duplicate eventId detected",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests - rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/interviews/regenerate": {
+            "post": {
+                "tags": ["Interviews"],
+                "summary": "Regenerate an existing interview",
+                "description": "Reset and regenerate an existing interview with a new expiry time",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegenerateInterviewRequest"
+                            },
+                            "example": {
+                                "eventId": "evt_regen_123",
+                                "interviewId": "intv_987654",
+                                "expiryInSeconds": 86400
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Interview regeneration request accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AcceptedResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Interview not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict - duplicate eventId detected",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ConflictError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/interviews/results/{interviewResultId}": {
+            "get": {
+                "tags": ["Interviews"],
+                "summary": "Get interview results",
+                "description": "Retrieve detailed results for a completed interview",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "interviewResultId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "result_123456",
+                        "description": "Interview result ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Interview results retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Interview result not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/interviews/{interviewId}/recordings": {
+            "get": {
+                "tags": ["Interviews"],
+                "summary": "Get interview recording details",
+                "description": "Retrieve recording URLs and metadata for an interview",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "interviewId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "intv_123456",
+                        "description": "Interview ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recording details retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Interview or recordings not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/interviews/{interviewId}/proctoring": {
+            "get": {
+                "tags": ["Interviews"],
+                "summary": "Get interview proctoring data",
+                "description": "Retrieve raw proctoring data including screenshots and monitoring logs",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "interviewId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "intv_123456",
+                        "description": "Interview ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Proctoring data retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Interview or proctoring data not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job-assessments": {
+            "get": {
+                "tags": ["Job Assessments"],
+                "summary": "Get all job assessments",
+                "description": "Retrieve a list of all job assessments for the authenticated client",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of job assessments retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Job Assessments"],
+                "summary": "Create a new job assessment",
+                "description": "Create a new job assessment with role, skills, and requirements",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateJobAssessmentRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Job assessment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job-assessments/{assessmentId}/candidates": {
+            "post": {
+                "tags": ["Job Assessments"],
+                "summary": "Add candidates to a job assessment",
+                "description": "Add one or more candidates to a specific job assessment",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "assessmentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "assessment_123",
+                        "description": "Job assessment ID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddCandidatesRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Candidates added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job-assessments/{assessmentId}/configs": {
+            "post": {
+                "tags": ["Job Assessments"],
+                "summary": "Configure job assessment questions",
+                "description": "Configure the number and types of questions for a job assessment",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "assessmentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "assessment_123",
+                        "description": "Job assessment ID"
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobAssessmentConfigRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Configuration updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job-assessments/configs": {
+            "post": {
+                "tags": ["Job Assessments"],
+                "summary": "Configure job assessment questions (without ID in path)",
+                "description": "Configure the number and types of questions for a job assessment using assessmentId in body",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/JobAssessmentConfigRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Configuration updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Rate limit exceeded",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RateLimitError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/job-assessments/{assessmentId}/interviews/counts": {
+            "get": {
+                "tags": ["Job Assessments"],
+                "summary": "Get interview statistics for a job assessment",
+                "description": "Retrieve count and statistics of interviews for a specific job assessment",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "assessmentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "assessment_123",
+                        "description": "Job assessment ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Interview statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Assessment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/token": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "Generate OAuth access token",
+                "description": "Obtain an access token using client credentials grant type for API authentication",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/OAuthTokenRequest"
+                            },
+                            "example": {
+                                "grant_type": "client_credentials",
+                                "client_id": "prism_client_abc123",
+                                "client_secret": "secret_xyz789"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Token generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthTokenResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - unsupported grant type",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid client credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/oauth/credentials/generate": {
+            "post": {
+                "tags": ["Authentication"],
+                "summary": "Generate OAuth client credentials",
+                "description": "Generate new OAuth client ID and secret for a user (requires authentication and permissions)",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GenerateCredentialsRequest"
+                            },
+                            "example": {
+                                "userId": "user_123456",
+                                "clientId": "client_789"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Credentials generated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GenerateCredentialsResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid or missing token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - insufficient permissions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/search-and-match/webhook": {
+            "post": {
+                "tags": ["Search & Match"],
+                "summary": "Search and match webhook",
+                "description": "Webhook endpoint to receive search and match processing results",
+                "security": [
+                    {
+                        "webhookApiKey": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SearchAndMatchWebhookRequest"
+                            },
+                            "example": {
+                                "client_id": "client_123",
+                                "doc_id": "doc_456",
+                                "status": "completed",
+                                "doc_type": "resume",
+                                "timestamp": "2026-03-11T10:30:00.000Z",
+                                "parent_id": "parent_789",
+                                "pii_info": {
+                                    "name": ["John Doe"],
+                                    "email": "john.doe@example.com",
+                                    "mobile_number": "+91-9876543210",
+                                    "links": ["https://linkedin.com/in/johndoe"]
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Webhook processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - invalid webhook API key",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/search-and-match/{externalCandidateAssessmentId}/candidate-assessments": {
+            "get": {
+                "tags": ["Search & Match"],
+                "summary": "Get search and match data",
+                "description": "Retrieve search and match data for a specific candidate assessment",
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "externalCandidateAssessmentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "ext_ca_123456",
+                        "description": "External candidate assessment ID"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search and match data retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UnauthorizedError"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Candidate assessment not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "CandidateAssessmentEventData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["candidate-assessment"],
+                                "example": "candidate-assessment"
+                            },
+                            "externalCandidateAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate assessment ID",
+                                "example": "ext_ca_12345"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateAssessmentCreationSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate_assessment.creation.succeeded"],
+                                "example": "candidate_assessment.creation.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateAssessmentEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateAssessmentCreationSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateAssessmentCreationSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate_assessment.creation.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "ca_01JNMQ2V7K",
+                                "entityType": "candidate-assessment",
+                                "externalCandidateAssessmentId": "ext_ca_12345"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "job-assessment-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateAssessmentCreationFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate_assessment.creation.failed"],
+                                "example": "candidate_assessment.creation.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateAssessmentEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateAssessmentCreationFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateAssessmentCreationFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate_assessment.creation.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "entityType": "candidate-assessment",
+                                "externalCandidateAssessmentId": "ext_ca_12345"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "job-assessment-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateAssessmentInterviewReadyData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["candidateAssessmentId", "externalCandidateAssessmentId"],
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["candidate-assessment"],
+                                "example": "candidate-assessment"
+                            },
+                            "candidateAssessmentId": {
+                                "type": "string",
+                                "description": "Internal Prism candidate assessment ID",
+                                "example": "ca_01JNMQ2V7K"
+                            },
+                            "externalCandidateAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate assessment ID",
+                                "example": "ext_ca_12345"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateAssessmentInterviewReadyWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate_assessment.interview.ready"],
+                                "example": "candidate_assessment.interview.ready"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateAssessmentInterviewReadyData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateAssessmentInterviewReadyEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateAssessmentInterviewReadyWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate_assessment.interview.ready",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "ca_01JNMQ2V7K",
+                                "entityType": "candidate-assessment",
+                                "candidateAssessmentId": "ca_01JNMQ2V7K",
+                                "externalCandidateAssessmentId": "ext_ca_12345"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateEventData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["candidate"],
+                                "example": "candidate"
+                            },
+                            "externalCandidateId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate ID",
+                                "example": "ext_cand_98765"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateCreationSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.creation.succeeded"],
+                                "example": "candidate.creation.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateCreationSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateCreationSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.creation.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "cand_01JNMQ2V7K",
+                                "entityType": "candidate",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateCreationFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.creation.failed"],
+                                "example": "candidate.creation.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateCreationFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateCreationFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.creation.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "entityType": "candidate",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateUpdateSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.update.succeeded"],
+                                "example": "candidate.update.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateUpdateSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateUpdateSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.update.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "cand_01JNMQ2V7K",
+                                "entityType": "candidate",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateUpdateFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.update.failed"],
+                                "example": "candidate.update.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateUpdateFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateUpdateFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.update.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "entityType": "candidate",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateResumeParsingEventData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["candidate-upload"],
+                                "example": "candidate-upload"
+                            },
+                            "candidateId": {
+                                "type": "string",
+                                "description": "Internal Prism candidate ID",
+                                "example": "cand_01JNMQ2V7K"
+                            },
+                            "externalCandidateId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate ID",
+                                "example": "ext_cand_98765"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateResumeParsingSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.resume.parsing.succeeded"],
+                                "example": "candidate.resume.parsing.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateResumeParsingEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateResumeParsingSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateResumeParsingSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.resume.parsing.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "resume_01JNMQ2V7K",
+                                "entityType": "candidate-upload",
+                                "candidateId": "cand_01JNMQ2V7K",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateResumeParsingFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["candidate.resume.parsing.failed"],
+                                "example": "candidate.resume.parsing.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateResumeParsingEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateResumeParsingFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateResumeParsingFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "candidate.resume.parsing.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "entityType": "candidate-upload",
+                                "externalCandidateId": "ext_cand_98765"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "candidate-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateItem": {
+                "type": "object",
+                "required": ["email", "firstName", "lastName"],
+                "properties": {
+                    "candidateId": {
+                        "type": "string",
+                        "example": "cand_ext_123",
+                        "description": "External candidate ID (optional)"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john.doe@example.com",
+                        "description": "Candidate's email address"
+                    },
+                    "firstName": {
+                        "type": "string",
+                        "example": "John",
+                        "description": "Candidate's first name"
+                    },
+                    "lastName": {
+                        "type": "string",
+                        "example": "Doe",
+                        "description": "Candidate's last name"
+                    },
+                    "noticePeriod": {
+                        "type": "string",
+                        "example": "30 days",
+                        "description": "Notice period (optional)"
+                    },
+                    "yearsOfExperience": {
+                        "type": "string",
+                        "example": "5",
+                        "description": "Years of experience (optional)"
+                    },
+                    "currentRole": {
+                        "type": "string",
+                        "example": "Software Engineer",
+                        "description": "Current role (optional)"
+                    },
+                    "currentCtc": {
+                        "type": "string",
+                        "example": "15 LPA",
+                        "description": "Current CTC (optional)"
+                    },
+                    "currentCity": {
+                        "type": "string",
+                        "example": "Bangalore",
+                        "description": "Current city (optional)"
+                    }
+                }
+            },
+            "AddCandidatesRequest": {
+                "type": "object",
+                "required": ["candidates"],
+                "properties": {
+                    "invite": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Whether to send invitation email to candidates"
+                    },
+                    "expiresInDays": {
+                        "type": "integer",
+                        "example": 7,
+                        "description": "Number of days until assessment invitation expires"
+                    },
+                    "candidates": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 100,
+                        "items": {
+                            "$ref": "#/components/schemas/CandidateItem"
+                        },
+                        "description": "Array of candidates to add (1-100 candidates)"
+                    }
+                }
+            },
+            "CandidateResumeRequest": {
+                "type": "object",
+                "required": ["candidateId", "fileType", "fileName", "base64EncodedFileContents"],
+                "properties": {
+                    "candidateId": {
+                        "type": "string",
+                        "example": "cand_123456",
+                        "description": "Candidate ID to attach resume to"
+                    },
+                    "fileType": {
+                        "type": "string",
+                        "enum": ["pdf", "docx", "doc"],
+                        "example": "pdf",
+                        "description": "Resume file type"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "example": "john_doe_resume.pdf",
+                        "description": "Name of the resume file"
+                    },
+                    "base64EncodedFileContents": {
+                        "type": "string",
+                        "format": "byte",
+                        "example": "JVBERi0xLjQKJeLjz9MKMSAwIG9iago8PC9UeXBlL...",
+                        "description": "Base64 encoded file contents"
+                    }
+                }
+            },
+            "CandidateAssessmentRequest": {
+                "type": "object",
+                "required": ["assessmentId", "candidateId", "candidateAssessmentId"],
+                "properties": {
+                    "assessmentId": {
+                        "type": "string",
+                        "example": "assessment_123",
+                        "description": "Job assessment ID"
+                    },
+                    "candidateId": {
+                        "type": "string",
+                        "example": "candidate_456",
+                        "description": "Candidate ID"
+                    },
+                    "candidateAssessmentId": {
+                        "type": "string",
+                        "example": "ca_789",
+                        "description": "External candidate assessment ID"
+                    }
+                }
+            },
+            "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 200,
+                        "description": "HTTP status code"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true,
+                        "description": "Indicates if the request was successful"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Response payload data"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Request processed successfully",
+                        "description": "Human-readable success message"
+                    }
+                }
+            },
+            "ErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 400,
+                        "description": "HTTP status code"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Always false for errors"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Request validation failed",
+                        "description": "Human-readable error message"
+                    },
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "VALIDATION_ERROR",
+                                "description": "Machine-readable error code"
+                            },
+                            "details": {
+                                "type": "string",
+                                "example": "Invalid request parameters",
+                                "description": "Detailed error information"
+                            }
+                        }
+                    }
+                }
+            },
+            "ValidationErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "errors": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "example": {
+                            "email": ["email is required", "email must be valid"],
+                            "firstName": ["firstName is required"]
+                        },
+                        "description": "Field-specific validation errors"
+                    }
+                }
+            },
+            "UnauthorizedError": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 401
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Unauthorized - invalid or missing authentication token"
+                    },
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "UNAUTHORIZED"
+                            },
+                            "details": {
+                                "type": "string",
+                                "example": "Invalid or expired token"
+                            }
+                        }
+                    }
+                }
+            },
+            "ConflictError": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 409
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Duplicate eventId detected"
+                    },
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "DUPLICATE_EVENT_ID"
+                            },
+                            "details": {
+                                "type": "string",
+                                "example": "Request with this eventId has already been processed"
+                            }
+                        }
+                    }
+                }
+            },
+            "RateLimitError": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 429
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Too many requests - rate limit exceeded"
+                    },
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "example": "RATE_LIMIT_EXCEEDED"
+                            },
+                            "details": {
+                                "type": "string",
+                                "example": "Please retry after some time"
+                            }
+                        }
+                    }
+                }
+            },
+            "AcceptedResponse": {
+                "type": "object",
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "example": 202,
+                        "description": "HTTP status code for accepted requests"
+                    },
+                    "success": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "data": {
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Request accepted for processing",
+                        "description": "Indicates async processing has started"
+                    }
+                }
+            },
+            "CreateInterviewItem": {
+                "type": "object",
+                "required": ["eventId", "externalCandidateAssessmentId", "expiryInSeconds"],
+                "properties": {
+                    "eventId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "evt_1238912",
+                        "description": "Client-provided event ID for duplicate prevention"
+                    },
+                    "externalCandidateAssessmentId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "87487364234",
+                        "description": "Candidate Assessment ID for which interview is to be created"
+                    },
+                    "expiryInSeconds": {
+                        "type": "integer",
+                        "minimum": 60,
+                        "maximum": 864000,
+                        "example": 864000,
+                        "description": "Expiry time for the interview in seconds"
+                    }
+                }
+            },
+            "RegenerateInterviewRequest": {
+                "type": "object",
+                "required": ["eventId", "interviewId", "expiryInSeconds"],
+                "properties": {
+                    "eventId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "evt_regen_123",
+                        "description": "Event ID for duplicate prevention"
+                    },
+                    "interviewId": {
+                        "type": "string",
+                        "minLength": 1,
+                        "example": "intv_987654",
+                        "description": "Interview ID which needs to be reset"
+                    },
+                    "expiryInSeconds": {
+                        "type": "integer",
+                        "minimum": 60,
+                        "maximum": 864000,
+                        "example": 86400,
+                        "description": "New expiry time for the interview in seconds"
+                    }
+                }
+            },
+            "InterviewCreationSucceededData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["interviewId", "interviewLink", "expiryDate", "candidateAssessmentId", "externalCandidateAssessmentId"],
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["interview"],
+                                "example": "interview"
+                            },
+                            "interviewId": {
+                                "type": "string",
+                                "description": "Prism interview ID",
+                                "example": "intv_01JNMQ2V7K"
+                            },
+                            "interviewLink": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "Link the candidate uses to start the interview",
+                                "example": "https://app.prismforce.com/interview/intv_01JNMQ2V7K"
+                            },
+                            "expiryDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Date-time after which the interview link expires",
+                                "example": "2024-01-25T10:30:00.000Z"
+                            },
+                            "candidateAssessmentId": {
+                                "type": "string",
+                                "description": "Internal Prism candidate assessment ID",
+                                "example": "ca_01JNMQ2V7K"
+                            },
+                            "externalCandidateAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate assessment ID",
+                                "example": "ext_ca_12345"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewCreationSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["interview.creation.succeeded"],
+                                "example": "interview.creation.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewCreationSucceededData"
+                            },
+                            "meta": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/WebhookMeta"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "candidateAssessmentId": {
+                                                "type": "string",
+                                                "example": "ca_01JNMQ2V7K"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewCreationSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewCreationSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "interview.creation.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "intv_01JNMQ2V7K",
+                                "entityType": "interview",
+                                "interviewId": "intv_01JNMQ2V7K",
+                                "interviewLink": "https://app.prismforce.com/interview/intv_01JNMQ2V7K",
+                                "expiryDate": "2024-01-25T10:30:00.000Z",
+                                "candidateAssessmentId": "ca_01JNMQ2V7K",
+                                "externalCandidateAssessmentId": "ext_ca_12345"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api",
+                                "candidateAssessmentId": "ca_01JNMQ2V7K"
+                            }
+                        }
+                    ]
+                }
+            },
+            "InterviewCreationFailedData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["externalCandidateAssessmentId"],
+                        "properties": {
+                            "externalCandidateAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate assessment ID",
+                                "example": "ext_ca_12345"
+                            },
+                            "candidateAssessmentId": {
+                                "type": "string",
+                                "description": "Present when the candidate assessment record was found",
+                                "example": "ca_01JNMQ2V7K"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewCreationFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["interview.creation.failed"],
+                                "example": "interview.creation.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewCreationFailedData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewCreationFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewCreationFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "interview.creation.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "externalCandidateAssessmentId": "ext_ca_12345"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api"
+                            }
+                        }
+                    ]
+                }
+            },
+            "InterviewResetSucceededData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["interviewId", "previousInterviewId", "interviewLink", "expiryDate"],
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["interview"],
+                                "example": "interview"
+                            },
+                            "interviewId": {
+                                "type": "string",
+                                "description": "New interview ID after reset",
+                                "example": "intv_01JNMQ2V7K"
+                            },
+                            "previousInterviewId": {
+                                "type": "string",
+                                "description": "Interview ID that was reset and replaced",
+                                "example": "intv_01JNMPREV"
+                            },
+                            "interviewLink": {
+                                "type": "string",
+                                "format": "uri",
+                                "description": "New interview link for the candidate",
+                                "example": "https://app.prismforce.com/interview/intv_01JNMQ2V7K"
+                            },
+                            "expiryDate": {
+                                "type": "string",
+                                "format": "date-time",
+                                "description": "Expiry date of the new interview link",
+                                "example": "2024-01-25T10:30:00.000Z"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewResetSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["interview.reset.succeeded"],
+                                "example": "interview.reset.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewResetSucceededData"
+                            },
+                            "meta": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/WebhookMeta"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "candidateAssessmentId": {
+                                                "type": "string",
+                                                "example": "ca_01JNMQ2V7K"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewResetSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewResetSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "interview.reset.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "intv_01JNMQ2V7K",
+                                "entityType": "interview",
+                                "interviewId": "intv_01JNMQ2V7K",
+                                "previousInterviewId": "intv_01JNMPREV",
+                                "interviewLink": "https://app.prismforce.com/interview/intv_01JNMQ2V7K",
+                                "expiryDate": "2024-01-25T10:30:00.000Z"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api",
+                                "candidateAssessmentId": "ca_01JNMQ2V7K"
+                            }
+                        }
+                    ]
+                }
+            },
+            "InterviewResetFailedData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["interviewId"],
+                        "properties": {
+                            "interviewId": {
+                                "type": "string",
+                                "description": "ID of the interview that failed to reset",
+                                "example": "intv_01JNMQ2V7K"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewResetFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["interview.reset.failed"],
+                                "example": "interview.reset.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewResetFailedData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewResetFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewResetFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "interview.reset.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "interviewId": "intv_01JNMQ2V7K"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api"
+                            }
+                        }
+                    ]
+                }
+            },
+            "JobAssessmentEventData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["job-assessment"],
+                                "example": "job-assessment"
+                            },
+                            "externalJobAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied job assessment ID (externalSystemId)",
+                                "example": "ext_jd_56789"
+                            }
+                        }
+                    }
+                ]
+            },
+            "JobDescriptionParseSucceededWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["job_description.parse.succeeded"],
+                                "example": "job_description.parse.succeeded"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/JobAssessmentEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "JobDescriptionParseSucceededEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/JobDescriptionParseSucceededWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "job_description.parse.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "ja_01JNMQ2V7K",
+                                "entityType": "job-assessment",
+                                "externalJobAssessmentId": "ext_jd_56789"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "job-assessment-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "JobDescriptionParseFailedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["job_description.parse.failed"],
+                                "example": "job_description.parse.failed"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/JobAssessmentEventData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "JobDescriptionParseFailedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/JobDescriptionParseFailedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "job_description.parse.failed",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 500,
+                                "status": "failed",
+                                "message": "something went wrong",
+                                "code": "INTERNAL_SERVER_ERROR",
+                                "entityId": "ja_01JNMQ2V7K",
+                                "entityType": "job-assessment",
+                                "externalJobAssessmentId": "ext_jd_56789"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "job-assessment-service"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CreateJobAssessmentRequest": {
+                "type": "object",
+                "required": ["title", "role", "description"],
+                "properties": {
+                    "assessmentId": {
+                        "type": "string",
+                        "example": "job_ext_123",
+                        "description": "Job ID in external system (optional)"
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Senior Backend Developer Position",
+                        "description": "Assessment title"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "Backend Developer",
+                        "description": "Job role"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "We are looking for an experienced backend developer...",
+                        "description": "Job description"
+                    },
+                    "skills": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["Node.js", "TypeScript", "MongoDB"],
+                        "description": "Key skills for the job"
+                    },
+                    "secondarySkills": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["Docker", "AWS", "Redis"],
+                        "description": "Secondary skills for the job"
+                    },
+                    "experienceRange": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "example": [3, 7],
+                        "description": "Experience range in years [min, max]"
+                    },
+                    "locationDetailed": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": ["remote", "onsite", "hybrid"],
+                                "example": "hybrid"
+                            },
+                            "locations": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "city": {
+                                            "type": "string",
+                                            "example": "Bangalore"
+                                        },
+                                        "country": {
+                                            "type": "string",
+                                            "example": "India"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "joiningTimeframe": {
+                        "type": "string",
+                        "example": "Immediate",
+                        "description": "Expected joining time frame"
+                    },
+                    "ctcRange": {
+                        "type": "string",
+                        "example": "15-25 LPA",
+                        "description": "Cost to Company range"
+                    },
+                    "difficulty": {
+                        "type": "string",
+                        "example": "medium",
+                        "description": "Assessment difficulty level"
+                    },
+                    "noticePeriod": {
+                        "type": "string",
+                        "example": "30 days",
+                        "description": "Notice period requirement"
+                    },
+                    "seniorityLevel": {
+                        "type": "string",
+                        "example": "senior",
+                        "description": "Seniority level"
+                    },
+                    "employmentType": {
+                        "type": "string",
+                        "example": "full-time",
+                        "description": "Type of employment"
+                    },
+                    "isManager": {
+                        "type": "boolean",
+                        "example": false,
+                        "description": "Is this a managerial position"
+                    },
+                    "requirements": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["5+ years of backend development", "Strong system design skills"],
+                        "description": "Job requirements"
+                    },
+                    "responsibilities": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["Design scalable APIs", "Lead technical discussions"],
+                        "description": "Job responsibilities"
+                    }
+                }
+            },
+            "JobAssessmentConfigRequest": {
+                "type": "object",
+                "required": ["questions"],
+                "properties": {
+                    "assessmentId": {
+                        "type": "string",
+                        "example": "assessment_123",
+                        "description": "Assessment ID to configure"
+                    },
+                    "questions": {
+                        "type": "object",
+                        "required": ["technical"],
+                        "properties": {
+                            "coding": {
+                                "type": "object",
+                                "required": ["count", "codingQuestionsTimeLimit"],
+                                "properties": {
+                                    "count": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 2,
+                                        "description": "Number of coding questions"
+                                    },
+                                    "codingQuestionsTimeLimit": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 45,
+                                        "description": "Time limit per coding question in minutes"
+                                    }
+                                }
+                            },
+                            "hr": {
+                                "type": "object",
+                                "required": ["count"],
+                                "properties": {
+                                    "count": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 3,
+                                        "description": "Number of HR questions"
+                                    }
+                                }
+                            },
+                            "technical": {
+                                "type": "object",
+                                "required": ["count"],
+                                "properties": {
+                                    "count": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "example": 5,
+                                        "description": "Number of technical questions"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "LegacyWebhookBody": {
+                "type": "object",
+                "required": ["event", "timestamp", "pfTransactionId", "data"],
+                "properties": {
+                    "event": {
+                        "type": "string",
+                        "description": "Webhook event name"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "ISO 8601 timestamp when the event was generated",
+                        "example": "2024-01-15T10:30:00.000Z"
+                    },
+                    "pfTransactionId": {
+                        "type": "string",
+                        "description": "ULID for end-to-end tracing",
+                        "example": "01JNMQ2V7KXYZ1234567890AB"
+                    },
+                    "data": {
+                        "type": "object",
+                        "description": "Event-specific payload"
+                    }
+                }
+            },
+            "LegacyWebhookEnvelope": {
+                "type": "object",
+                "required": ["data"],
+                "description": "Top-level envelope for legacy webhook events. Note: does NOT include id, clientId, environment, version, or meta.\n",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "minItems": 1,
+                        "items": {
+                            "$ref": "#/components/schemas/LegacyWebhookBody"
+                        }
+                    }
+                }
+            },
+            "InterviewCreatedData": {
+                "type": "object",
+                "required": ["candidateAssessmentId", "interviewId", "interviewLink", "expiryDate"],
+                "properties": {
+                    "candidateAssessmentId": {
+                        "type": "string",
+                        "description": "Client-supplied external candidate assessment ID",
+                        "example": "ext_ca_12345"
+                    },
+                    "interviewId": {
+                        "type": "string",
+                        "description": "Prism interview ID",
+                        "example": "intv_01JNMQ2V7K"
+                    },
+                    "interviewLink": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL the candidate uses to start the interview",
+                        "example": "https://app.prismforce.com/interview/intv_01JNMQ2V7K"
+                    },
+                    "expiryDate": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "Date-time when the interview link expires",
+                        "example": "2024-01-25T10:30:00.000Z"
+                    }
+                }
+            },
+            "InterviewCreatedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "enum": ["interview.created"],
+                                "example": "interview.created"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewCreatedData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewCreatedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewCreatedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "event": "interview.created",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "data": {
+                                "candidateAssessmentId": "ext_ca_12345",
+                                "interviewId": "intv_01JNMQ2V7K",
+                                "interviewLink": "https://app.prismforce.com/interview/intv_01JNMQ2V7K",
+                                "expiryDate": "2024-01-25T10:30:00.000Z"
+                            }
+                        }
+                    ]
+                }
+            },
+            "InterviewReportGeneratedData": {
+                "type": "object",
+                "required": ["interviewReportId"],
+                "properties": {
+                    "interviewReportId": {
+                        "type": "string",
+                        "description": "ID of the generated interview report",
+                        "example": "report_01JNMQ2V7K"
+                    }
+                }
+            },
+            "InterviewReportGeneratedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "enum": ["interview.report.generated"],
+                                "example": "interview.report.generated"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/InterviewReportGeneratedData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "InterviewReportGeneratedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/InterviewReportGeneratedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "event": "interview.report.generated",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "data": {
+                                "interviewReportId": "report_01JNMQ2V7K"
+                            }
+                        }
+                    ]
+                }
+            },
+            "RecordingDetails": {
+                "type": "object",
+                "properties": {
+                    "recordingId": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "ID of the recording",
+                        "example": "rec_01JNMQ2V7K"
+                    },
+                    "recordingUrl": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "URL to access the recording",
+                        "example": "https://recordings.prismforce.com/rec_01JNMQ2V7K"
+                    },
+                    "recordingStatus": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Status of the recording session",
+                        "example": "completed"
+                    },
+                    "interviewId": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Associated interview ID",
+                        "example": "intv_01JNMQ2V7K"
+                    }
+                }
+            },
+            "RecordingDataGeneratedData": {
+                "type": "object",
+                "required": ["recordingDetails"],
+                "properties": {
+                    "recordingDetails": {
+                        "$ref": "#/components/schemas/RecordingDetails"
+                    }
+                }
+            },
+            "RecordingDataGeneratedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "enum": ["recording.data.generated"],
+                                "example": "recording.data.generated"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/RecordingDataGeneratedData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "RecordingDataGeneratedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/RecordingDataGeneratedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "event": "recording.data.generated",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "data": {
+                                "recordingDetails": {
+                                    "recordingId": "rec_01JNMQ2V7K",
+                                    "recordingUrl": "https://recordings.prismforce.com/rec_01JNMQ2V7K",
+                                    "recordingStatus": "completed",
+                                    "interviewId": "intv_01JNMQ2V7K"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "ProctoringDataGeneratedData": {
+                "type": "object",
+                "required": ["clientId", "interviewId"],
+                "properties": {
+                    "clientId": {
+                        "type": "string",
+                        "description": "Internal Prism client ID",
+                        "example": "ucqcjbxnuk"
+                    },
+                    "interviewId": {
+                        "type": "string",
+                        "description": "Interview ID for which proctoring data was generated",
+                        "example": "intv_01JNMQ2V7K"
+                    }
+                }
+            },
+            "ProctoringDataGeneratedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "enum": ["proctoring.data.generated"],
+                                "example": "proctoring.data.generated"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/ProctoringDataGeneratedData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "ProctoringDataGeneratedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/ProctoringDataGeneratedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "event": "proctoring.data.generated",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "data": {
+                                "clientId": "ucqcjbxnuk",
+                                "interviewId": "intv_01JNMQ2V7K"
+                            }
+                        }
+                    ]
+                }
+            },
+            "CandidateBelowSnmThresholdData": {
+                "type": "object",
+                "required": ["candidateAssessmentId"],
+                "properties": {
+                    "candidateAssessmentId": {
+                        "type": "string",
+                        "description": "Client-supplied external candidate assessment ID",
+                        "example": "ext_ca_12345"
+                    }
+                }
+            },
+            "CandidateBelowSnmThresholdWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "event": {
+                                "type": "string",
+                                "enum": ["candidate.matchScore.belowThreshold"],
+                                "example": "candidate.matchScore.belowThreshold"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/CandidateBelowSnmThresholdData"
+                            }
+                        }
+                    }
+                ]
+            },
+            "CandidateBelowSnmThresholdEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/LegacyWebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/CandidateBelowSnmThresholdWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "event": "candidate.matchScore.belowThreshold",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "data": {
+                                "candidateAssessmentId": "ext_ca_12345"
+                            }
+                        }
+                    ]
+                }
+            },
+            "OAuthTokenRequest": {
+                "type": "object",
+                "required": ["grant_type", "client_id", "client_secret"],
+                "properties": {
+                    "grant_type": {
+                        "type": "string",
+                        "enum": ["client_credentials"],
+                        "example": "client_credentials",
+                        "description": "OAuth 2.0 grant type (only client_credentials is supported)"
+                    },
+                    "client_id": {
+                        "type": "string",
+                        "example": "prism_client_abc123",
+                        "description": "OAuth client ID provided by Prism"
+                    },
+                    "client_secret": {
+                        "type": "string",
+                        "example": "secret_xyz789",
+                        "description": "OAuth client secret provided by Prism"
+                    }
+                }
+            },
+            "OAuthTokenResponse": {
+                "type": "object",
+                "properties": {
+                    "access_token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                        "description": "JWT access token for API authentication"
+                    },
+                    "token_type": {
+                        "type": "string",
+                        "example": "Bearer",
+                        "description": "Token type (always Bearer)"
+                    },
+                    "expires_in": {
+                        "type": "integer",
+                        "example": 3600,
+                        "description": "Token expiration time in seconds"
+                    }
+                }
+            },
+            "OAuthErrorResponse": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "string",
+                        "enum": ["invalid_client", "unsupported_grant_type", "server_error"],
+                        "example": "invalid_client",
+                        "description": "OAuth 2.0 error code"
+                    },
+                    "errorDescription": {
+                        "type": "string",
+                        "example": "Client authentication failed",
+                        "description": "Human-readable error description"
+                    }
+                }
+            },
+            "GenerateCredentialsRequest": {
+                "type": "object",
+                "required": ["userId"],
+                "properties": {
+                    "userId": {
+                        "type": "string",
+                        "example": "user_123456",
+                        "description": "User ID for which to generate credentials"
+                    },
+                    "clientId": {
+                        "type": "string",
+                        "example": "client_789",
+                        "description": "Optional client ID to associate with credentials"
+                    }
+                }
+            },
+            "GenerateCredentialsResponse": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "data": {
+                        "type": "object",
+                        "properties": {
+                            "client_id": {
+                                "type": "string",
+                                "example": "prism_client_abc123"
+                            },
+                            "client_secret": {
+                                "type": "string",
+                                "example": "secret_xyz789"
+                            }
+                        }
+                    }
+                }
+            },
+            "SearchAndMatchGeneratedData": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    {
+                        "type": "object",
+                        "required": ["candidateAssessmentId", "externalCandidateAssessmentId"],
+                        "properties": {
+                            "entityType": {
+                                "type": "string",
+                                "enum": ["candidate-assessment"],
+                                "example": "candidate-assessment"
+                            },
+                            "candidateAssessmentId": {
+                                "type": "string",
+                                "description": "Internal Prism candidate assessment ID",
+                                "example": "ca_01JNMQ2V7K"
+                            },
+                            "externalCandidateAssessmentId": {
+                                "type": "string",
+                                "description": "Client-supplied candidate assessment ID",
+                                "example": "ext_ca_12345"
+                            },
+                            "matchScore": {
+                                "type": "number",
+                                "nullable": true,
+                                "description": "Numerical match score between candidate and job assessment (0–100)",
+                                "example": 78.5
+                            }
+                        }
+                    }
+                ]
+            },
+            "SearchAndMatchGeneratedWebhook": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookBody"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "eventType": {
+                                "type": "string",
+                                "enum": ["search.and.match.data.generated"],
+                                "example": "search.and.match.data.generated"
+                            },
+                            "data": {
+                                "$ref": "#/components/schemas/SearchAndMatchGeneratedData"
+                            },
+                            "meta": {
+                                "$ref": "#/components/schemas/WebhookMeta"
+                            }
+                        }
+                    }
+                ]
+            },
+            "SearchAndMatchGeneratedEnvelope": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/WebhookEnvelope"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/SearchAndMatchGeneratedWebhook"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "search.and.match.data.generated",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success",
+                                "entityId": "ca_01JNMQ2V7K",
+                                "entityType": "candidate-assessment",
+                                "candidateAssessmentId": "ca_01JNMQ2V7K",
+                                "externalCandidateAssessmentId": "ext_ca_12345",
+                                "matchScore": 78.5
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api"
+                            }
+                        }
+                    ]
+                }
+            },
+            "SearchAndMatchWebhookRequest": {
+                "type": "object",
+                "required": ["client_id", "doc_id", "status", "doc_type", "timestamp", "parent_id"],
+                "properties": {
+                    "client_id": {
+                        "type": "string",
+                        "example": "client_123",
+                        "description": "Client identifier"
+                    },
+                    "doc_id": {
+                        "type": "string",
+                        "example": "doc_456",
+                        "description": "Document ID"
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "completed",
+                        "description": "Processing status"
+                    },
+                    "doc_type": {
+                        "type": "string",
+                        "example": "resume",
+                        "description": "Type of document"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2026-03-11T10:30:00.000Z",
+                        "description": "Timestamp of the event"
+                    },
+                    "parent_id": {
+                        "type": "string",
+                        "example": "parent_789",
+                        "description": "Parent document or entity ID"
+                    },
+                    "pii_info": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "example": ["John Doe"],
+                                "description": "Candidate name(s) extracted"
+                            },
+                            "links": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "example": ["https://linkedin.com/in/johndoe"],
+                                "description": "Links extracted from resume"
+                            },
+                            "email": {
+                                "type": "string",
+                                "format": "email",
+                                "example": "john.doe@example.com",
+                                "description": "Email address extracted"
+                            },
+                            "mobile_number": {
+                                "type": "string",
+                                "example": "+91-9876543210",
+                                "description": "Mobile number extracted"
+                            }
+                        },
+                        "description": "Personally Identifiable Information extracted from document"
+                    }
+                }
+            },
+            "WebhookStatus": {
+                "type": "string",
+                "enum": ["succeeded", "failed", "ready"],
+                "description": "Outcome status of the webhook event"
+            },
+            "WebhookEntityType": {
+                "type": "string",
+                "enum": ["candidate-assessment", "interview", "job-assessment", "candidate", "candidate-upload"],
+                "description": "The type of entity the event relates to"
+            },
+            "WebhookSourceService": {
+                "type": "string",
+                "enum": ["core-api", "job-assessment-service", "candidate-service"],
+                "description": "Internal service that generated the webhook"
+            },
+            "WebhookMeta": {
+                "type": "object",
+                "required": ["pfTransactionId", "sourceService"],
+                "properties": {
+                    "pfTransactionId": {
+                        "type": "string",
+                        "description": "ULID transaction ID; matches the root envelope pfTransactionId",
+                        "example": "01JNMQ2V7KXYZ1234567890AB"
+                    },
+                    "sourceService": {
+                        "$ref": "#/components/schemas/WebhookSourceService"
+                    },
+                    "candidateAssessmentId": {
+                        "type": "string",
+                        "description": "Present on interview and candidate-assessment events",
+                        "example": "ca_01JNMQ2V7K"
+                    }
+                }
+            },
+            "WebhookDataBase": {
+                "type": "object",
+                "required": ["statusCode", "status", "message"],
+                "properties": {
+                    "statusCode": {
+                        "type": "integer",
+                        "description": "HTTP-equivalent status code for the operation",
+                        "example": 200
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/WebhookStatus"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "success"
+                    },
+                    "entityId": {
+                        "type": "string",
+                        "description": "Internal Prism ID of the affected entity",
+                        "example": "entity_01JNMQ2V7K"
+                    },
+                    "entityType": {
+                        "$ref": "#/components/schemas/WebhookEntityType"
+                    },
+                    "code": {
+                        "type": "string",
+                        "description": "Application-level error code (present on failure events only)",
+                        "example": "INTERNAL_SERVER_ERROR"
+                    }
+                }
+            },
+            "WebhookBody": {
+                "type": "object",
+                "required": ["id", "clientId", "pfTransactionId", "eventType", "environment", "version", "timestamp", "data", "meta"],
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "description": "Unique event ID with evt_ prefix",
+                        "example": "evt_01JNMQ2V7KXYZ1234567890AB"
+                    },
+                    "clientId": {
+                        "type": "string",
+                        "description": "External client identifier",
+                        "example": "ucqcjbxnuk"
+                    },
+                    "pfTransactionId": {
+                        "type": "string",
+                        "description": "ULID used for end-to-end tracing",
+                        "example": "01JNMQ2V7KXYZ1234567890AB"
+                    },
+                    "eventType": {
+                        "type": "string",
+                        "description": "Webhook event name (see individual event schemas)",
+                        "example": "interview.creation.succeeded"
+                    },
+                    "environment": {
+                        "type": "string",
+                        "description": "Deployment environment",
+                        "example": "production"
+                    },
+                    "version": {
+                        "type": "string",
+                        "example": "1.0"
+                    },
+                    "timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "ISO 8601 timestamp when the event was generated",
+                        "example": "2024-01-15T10:30:00.000Z"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/WebhookDataBase"
+                    },
+                    "meta": {
+                        "$ref": "#/components/schemas/WebhookMeta"
+                    }
+                }
+            },
+            "WebhookEnvelope": {
+                "type": "object",
+                "required": ["data"],
+                "description": "Top-level payload POSTed to the client webhook URL. The data array always contains exactly one event body.\n",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "minItems": 1,
+                        "maxItems": 1,
+                        "items": {
+                            "$ref": "#/components/schemas/WebhookBody"
+                        }
+                    }
+                },
+                "example": {
+                    "data": [
+                        {
+                            "id": "evt_01JNMQ2V7KXYZ1234567890AB",
+                            "clientId": "ucqcjbxnuk",
+                            "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                            "eventType": "interview.creation.succeeded",
+                            "environment": "production",
+                            "version": "1.0",
+                            "timestamp": "2024-01-15T10:30:00.000Z",
+                            "data": {
+                                "statusCode": 200,
+                                "status": "succeeded",
+                                "message": "success"
+                            },
+                            "meta": {
+                                "pfTransactionId": "01JNMQ2V7KXYZ1234567890AB",
+                                "sourceService": "core-api"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "description": "Bearer token for external API authentication (most common)"
+            },
+            "apiKeyAuth": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-api-key",
+                "description": "API key for internal service-to-service communication"
+            },
+            "webhookApiKey": {
+                "type": "apiKey",
+                "in": "header",
+                "name": "x-webhook-api-key",
+                "description": "API key for webhook authentication"
+            }
+        }
+    },
+    "tags": []
+}

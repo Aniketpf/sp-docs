@@ -1,0 +1,26 @@
+{
+    "title": "Body",
+    "body": {
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["grant_type", "client_id", "client_secret"],
+                    "properties": {
+                        "grant_type": {
+                            "type": "string",
+                            "enum": ["client_credentials"],
+                            "example": "client_credentials",
+                            "description": "OAuth 2.0 grant type (only client_credentials is supported)"
+                        },
+                        "client_id": { "type": "string", "example": "prism_client_abc123", "description": "OAuth client ID provided by Prism" },
+                        "client_secret": { "type": "string", "example": "secret_xyz789", "description": "OAuth client secret provided by Prism" }
+                    },
+                    "title": "OAuthTokenRequest"
+                },
+                "example": { "grant_type": "client_credentials", "client_id": "prism_client_abc123", "client_secret": "secret_xyz789" }
+            }
+        }
+    }
+}

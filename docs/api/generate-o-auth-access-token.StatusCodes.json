@@ -1,0 +1,96 @@
+{
+    "responses": {
+        "200": {
+            "description": "Token generated successfully",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "access_token": {
+                                "type": "string",
+                                "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                                "description": "JWT access token for API authentication"
+                            },
+                            "token_type": { "type": "string", "example": "Bearer", "description": "Token type (always Bearer)" },
+                            "expires_in": { "type": "integer", "example": 3600, "description": "Token expiration time in seconds" }
+                        },
+                        "title": "OAuthTokenResponse"
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request - unsupported grant type",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "type": "string",
+                                "enum": ["invalid_client", "unsupported_grant_type", "server_error"],
+                                "example": "invalid_client",
+                                "description": "OAuth 2.0 error code"
+                            },
+                            "errorDescription": {
+                                "type": "string",
+                                "example": "Client authentication failed",
+                                "description": "Human-readable error description"
+                            }
+                        },
+                        "title": "OAuthErrorResponse"
+                    }
+                }
+            }
+        },
+        "401": {
+            "description": "Unauthorized - invalid client credentials",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "type": "string",
+                                "enum": ["invalid_client", "unsupported_grant_type", "server_error"],
+                                "example": "invalid_client",
+                                "description": "OAuth 2.0 error code"
+                            },
+                            "errorDescription": {
+                                "type": "string",
+                                "example": "Client authentication failed",
+                                "description": "Human-readable error description"
+                            }
+                        },
+                        "title": "OAuthErrorResponse"
+                    }
+                }
+            }
+        },
+        "500": {
+            "description": "Internal server error",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "error": {
+                                "type": "string",
+                                "enum": ["invalid_client", "unsupported_grant_type", "server_error"],
+                                "example": "invalid_client",
+                                "description": "OAuth 2.0 error code"
+                            },
+                            "errorDescription": {
+                                "type": "string",
+                                "example": "Client authentication failed",
+                                "description": "Human-readable error description"
+                            }
+                        },
+                        "title": "OAuthErrorResponse"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,62 @@
+{
+    "title": "Body",
+    "body": {
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["client_id", "doc_id", "status", "doc_type", "timestamp", "parent_id"],
+                    "properties": {
+                        "client_id": { "type": "string", "example": "client_123", "description": "Client identifier" },
+                        "doc_id": { "type": "string", "example": "doc_456", "description": "Document ID" },
+                        "status": { "type": "string", "example": "completed", "description": "Processing status" },
+                        "doc_type": { "type": "string", "example": "resume", "description": "Type of document" },
+                        "timestamp": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-03-11T10:30:00.000Z",
+                            "description": "Timestamp of the event"
+                        },
+                        "parent_id": { "type": "string", "example": "parent_789", "description": "Parent document or entity ID" },
+                        "pii_info": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "array",
+                                    "items": { "type": "string" },
+                                    "example": ["John Doe"],
+                                    "description": "Candidate name(s) extracted"
+                                },
+                                "links": {
+                                    "type": "array",
+                                    "items": { "type": "string" },
+                                    "example": ["https://linkedin.com/in/johndoe"],
+                                    "description": "Links extracted from resume"
+                                },
+                                "email": { "type": "string", "format": "email", "example": "john.doe@example.com", "description": "Email address extracted" },
+                                "mobile_number": { "type": "string", "example": "+91-9876543210", "description": "Mobile number extracted" }
+                            },
+                            "description": "Personally Identifiable Information extracted from document"
+                        }
+                    },
+                    "title": "SearchAndMatchWebhookRequest"
+                },
+                "example": {
+                    "client_id": "client_123",
+                    "doc_id": "doc_456",
+                    "status": "completed",
+                    "doc_type": "resume",
+                    "timestamp": "2026-03-11T10:30:00.000Z",
+                    "parent_id": "parent_789",
+                    "pii_info": {
+                        "name": ["John Doe"],
+                        "email": "john.doe@example.com",
+                        "mobile_number": "+91-9876543210",
+                        "links": ["https://linkedin.com/in/johndoe"]
+                    }
+                }
+            }
+        }
+    }
+}

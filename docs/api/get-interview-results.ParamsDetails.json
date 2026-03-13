@@ -1,0 +1,12 @@
+{
+    "parameters": [
+        {
+            "name": "interviewResultId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "example": "result_123456",
+            "description": "Interview result ID"
+        }
+    ]
+}

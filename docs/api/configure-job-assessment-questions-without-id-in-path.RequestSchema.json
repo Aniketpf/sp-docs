@@ -1,0 +1,47 @@
+{
+    "title": "Body",
+    "body": {
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["questions"],
+                    "properties": {
+                        "assessmentId": { "type": "string", "example": "assessment_123", "description": "Assessment ID to configure" },
+                        "questions": {
+                            "type": "object",
+                            "required": ["technical"],
+                            "properties": {
+                                "coding": {
+                                    "type": "object",
+                                    "required": ["count", "codingQuestionsTimeLimit"],
+                                    "properties": {
+                                        "count": { "type": "integer", "minimum": 1, "example": 2, "description": "Number of coding questions" },
+                                        "codingQuestionsTimeLimit": {
+                                            "type": "integer",
+                                            "minimum": 1,
+                                            "example": 45,
+                                            "description": "Time limit per coding question in minutes"
+                                        }
+                                    }
+                                },
+                                "hr": {
+                                    "type": "object",
+                                    "required": ["count"],
+                                    "properties": { "count": { "type": "integer", "minimum": 1, "example": 3, "description": "Number of HR questions" } }
+                                },
+                                "technical": {
+                                    "type": "object",
+                                    "required": ["count"],
+                                    "properties": { "count": { "type": "integer", "minimum": 1, "example": 5, "description": "Number of technical questions" } }
+                                }
+                            }
+                        }
+                    },
+                    "title": "JobAssessmentConfigRequest"
+                }
+            }
+        }
+    }
+}

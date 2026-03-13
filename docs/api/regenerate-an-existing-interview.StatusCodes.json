@@ -1,0 +1,136 @@
+{
+    "responses": {
+        "202": {
+            "description": "Interview regeneration request accepted",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 202, "description": "HTTP status code for accepted requests" },
+                            "success": { "type": "boolean", "example": true },
+                            "data": { "type": "object" },
+                            "message": {
+                                "type": "string",
+                                "example": "Request accepted for processing",
+                                "description": "Indicates async processing has started"
+                            }
+                        },
+                        "title": "AcceptedResponse"
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request - validation error",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "errors": {
+                                "type": "object",
+                                "additionalProperties": { "type": "array", "items": { "type": "string" } },
+                                "example": { "email": ["email is required", "email must be valid"], "firstName": ["firstName is required"] },
+                                "description": "Field-specific validation errors"
+                            }
+                        },
+                        "title": "ValidationErrorResponse"
+                    }
+                }
+            }
+        },
+        "401": {
+            "description": "Unauthorized",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 401 },
+                            "success": { "type": "boolean", "example": false },
+                            "message": { "type": "string", "example": "Unauthorized - invalid or missing authentication token" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "UNAUTHORIZED" },
+                                    "details": { "type": "string", "example": "Invalid or expired token" }
+                                }
+                            }
+                        },
+                        "title": "UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "404": {
+            "description": "Interview not found",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 400, "description": "HTTP status code" },
+                            "success": { "type": "boolean", "example": false, "description": "Always false for errors" },
+                            "message": { "type": "string", "example": "Request validation failed", "description": "Human-readable error message" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "VALIDATION_ERROR", "description": "Machine-readable error code" },
+                                    "details": { "type": "string", "example": "Invalid request parameters", "description": "Detailed error information" }
+                                }
+                            }
+                        },
+                        "title": "ErrorResponse"
+                    }
+                }
+            }
+        },
+        "409": {
+            "description": "Conflict - duplicate eventId detected",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 409 },
+                            "success": { "type": "boolean", "example": false },
+                            "message": { "type": "string", "example": "Duplicate eventId detected" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "DUPLICATE_EVENT_ID" },
+                                    "details": { "type": "string", "example": "Request with this eventId has already been processed" }
+                                }
+                            }
+                        },
+                        "title": "ConflictError"
+                    }
+                }
+            }
+        },
+        "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 429 },
+                            "success": { "type": "boolean", "example": false },
+                            "message": { "type": "string", "example": "Too many requests - rate limit exceeded" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "RATE_LIMIT_EXCEEDED" },
+                                    "details": { "type": "string", "example": "Please retry after some time" }
+                                }
+                            }
+                        },
+                        "title": "RateLimitError"
+                    }
+                }
+            }
+        }
+    }
+}

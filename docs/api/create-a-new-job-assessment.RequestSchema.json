@@ -1,0 +1,80 @@
+{
+    "title": "Body",
+    "body": {
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["title", "role", "description"],
+                    "properties": {
+                        "assessmentId": { "type": "string", "example": "job_ext_123", "description": "Job ID in external system (optional)" },
+                        "title": { "type": "string", "example": "Senior Backend Developer Position", "description": "Assessment title" },
+                        "role": { "type": "string", "example": "Backend Developer", "description": "Job role" },
+                        "description": {
+                            "type": "string",
+                            "example": "We are looking for an experienced backend developer...",
+                            "description": "Job description"
+                        },
+                        "skills": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "example": ["Node.js", "TypeScript", "MongoDB"],
+                            "description": "Key skills for the job"
+                        },
+                        "secondarySkills": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "example": ["Docker", "AWS", "Redis"],
+                            "description": "Secondary skills for the job"
+                        },
+                        "experienceRange": {
+                            "type": "array",
+                            "items": { "type": "integer" },
+                            "minItems": 2,
+                            "maxItems": 2,
+                            "example": [3, 7],
+                            "description": "Experience range in years [min, max]"
+                        },
+                        "locationDetailed": {
+                            "type": "object",
+                            "properties": {
+                                "type": { "type": "string", "enum": ["remote", "onsite", "hybrid"], "example": "hybrid" },
+                                "locations": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "city": { "type": "string", "example": "Bangalore" },
+                                            "country": { "type": "string", "example": "India" }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "joiningTimeframe": { "type": "string", "example": "Immediate", "description": "Expected joining time frame" },
+                        "ctcRange": { "type": "string", "example": "15-25 LPA", "description": "Cost to Company range" },
+                        "difficulty": { "type": "string", "example": "medium", "description": "Assessment difficulty level" },
+                        "noticePeriod": { "type": "string", "example": "30 days", "description": "Notice period requirement" },
+                        "seniorityLevel": { "type": "string", "example": "senior", "description": "Seniority level" },
+                        "employmentType": { "type": "string", "example": "full-time", "description": "Type of employment" },
+                        "isManager": { "type": "boolean", "example": false, "description": "Is this a managerial position" },
+                        "requirements": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "example": ["5+ years of backend development", "Strong system design skills"],
+                            "description": "Job requirements"
+                        },
+                        "responsibilities": {
+                            "type": "array",
+                            "items": { "type": "string" },
+                            "example": ["Design scalable APIs", "Lead technical discussions"],
+                            "description": "Job responsibilities"
+                        }
+                    },
+                    "title": "CreateJobAssessmentRequest"
+                }
+            }
+        }
+    }
+}
