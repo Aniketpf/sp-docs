@@ -1,0 +1,109 @@
+{
+    "responses": {
+        "200": {
+            "description": "Resume attached successfully",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 200, "description": "HTTP status code" },
+                            "success": { "type": "boolean", "example": true, "description": "Indicates if the request was successful" },
+                            "data": { "type": "object", "description": "Response payload data" },
+                            "message": { "type": "string", "example": "Request processed successfully", "description": "Human-readable success message" }
+                        },
+                        "title": "SuccessResponse"
+                    }
+                }
+            }
+        },
+        "400": {
+            "description": "Bad request - validation error",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "errors": {
+                                "type": "object",
+                                "additionalProperties": { "type": "array", "items": { "type": "string" } },
+                                "example": { "email": ["email is required", "email must be valid"], "firstName": ["firstName is required"] },
+                                "description": "Field-specific validation errors"
+                            }
+                        },
+                        "title": "ValidationErrorResponse"
+                    }
+                }
+            }
+        },
+        "401": {
+            "description": "Unauthorized",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 401 },
+                            "success": { "type": "boolean", "example": false },
+                            "message": { "type": "string", "example": "Unauthorized - invalid or missing authentication token" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "UNAUTHORIZED" },
+                                    "details": { "type": "string", "example": "Invalid or expired token" }
+                                }
+                            }
+                        },
+                        "title": "UnauthorizedError"
+                    }
+                }
+            }
+        },
+        "404": {
+            "description": "Candidate not found",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 400, "description": "HTTP status code" },
+                            "success": { "type": "boolean", "example": false, "description": "Always false for errors" },
+                            "message": { "type": "string", "example": "Request validation failed", "description": "Human-readable error message" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "VALIDATION_ERROR", "description": "Machine-readable error code" },
+                                    "details": { "type": "string", "example": "Invalid request parameters", "description": "Detailed error information" }
+                                }
+                            }
+                        },
+                        "title": "ErrorResponse"
+                    }
+                }
+            }
+        },
+        "429": {
+            "description": "Rate limit exceeded",
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "statusCode": { "type": "integer", "example": 429 },
+                            "success": { "type": "boolean", "example": false },
+                            "message": { "type": "string", "example": "Too many requests - rate limit exceeded" },
+                            "error": {
+                                "type": "object",
+                                "properties": {
+                                    "code": { "type": "string", "example": "RATE_LIMIT_EXCEEDED" },
+                                    "details": { "type": "string", "example": "Please retry after some time" }
+                                }
+                            }
+                        },
+                        "title": "RateLimitError"
+                    }
+                }
+            }
+        }
+    }
+}

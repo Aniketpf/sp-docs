@@ -1,0 +1,5 @@
+{
+    "parameters": [
+        { "name": "interviewId", "in": "path", "required": true, "schema": { "type": "string" }, "example": "intv_123456", "description": "Interview ID" }
+    ]
+}

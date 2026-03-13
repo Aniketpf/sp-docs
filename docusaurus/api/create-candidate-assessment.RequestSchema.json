@@ -1,0 +1,21 @@
+{
+    "title": "Body",
+    "body": {
+        "required": true,
+        "content": {
+            "application/json": {
+                "schema": {
+                    "type": "object",
+                    "required": ["assessmentId", "candidateId", "candidateAssessmentId"],
+                    "properties": {
+                        "assessmentId": { "type": "string", "example": "assessment_123", "description": "Job assessment ID" },
+                        "candidateId": { "type": "string", "example": "candidate_456", "description": "Candidate ID" },
+                        "candidateAssessmentId": { "type": "string", "example": "ca_789", "description": "External candidate assessment ID" }
+                    },
+                    "title": "CandidateAssessmentRequest"
+                },
+                "example": { "assessmentId": "assessment_123", "candidateId": "candidate_456", "candidateAssessmentId": "ca_789" }
+            }
+        }
+    }
+}

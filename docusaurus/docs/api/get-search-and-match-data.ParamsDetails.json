@@ -1,0 +1,1 @@
+{"parameters":[{"name":"externalCandidateAssessmentId","in":"path","required":true,"schema":{"type":"string"},"example":"ext_ca_123456","description":"External candidate assessment ID"}]}
