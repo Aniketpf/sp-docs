@@ -90,9 +90,6 @@ const config: Config = {
       contextualSearch: false,
       searchPagePath: 'search',
       insights: true,
-      searchParameters: {
-        facetFilters: ['lang:en'],
-      },
     },
     navbar: {
       title: 'SelectPrism',
@@ -159,7 +156,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Selectprism Documentation, Inc. Built with Docusaurus.`,
     },
     prism: {
       theme: prismThemes.github,
@@ -171,9 +168,9 @@ const config: Config = {
 export default config;
 
 /**
- * docker run --rm --platform linux/amd64 \                                 
-  -e APPLICATION_ID=4NFQAL2J5A \
-  -e API_KEY=0318d67eb026e6b44be1d7633fded5db \
-  -e "CONFIG=$(cat docsearch-config.json | jq -r tostring)" \
-  algolia/docsearch-scraper
+ * docker run --rm --platform linux/amd64 \
+-e APPLICATION_ID=4NFQAL2J5A \
+-e API_KEY=0318d67eb026e6b44be1d7633fded5db \
+-e "CONFIG=$(cat docsearch-config.json | jq -r tostring)" \
+algolia/docsearch-scraper
  */
